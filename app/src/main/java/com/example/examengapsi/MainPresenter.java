@@ -2,7 +2,6 @@ package com.example.examengapsi;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -14,9 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,46 +46,17 @@ public class MainPresenter implements MainInterface.MainPresenter {
                             getResultProductos(jsonObject.getJSONObject("plpResults").getJSONArray("records"));
                         }
                     } catch (JSONException e) {
+                        view.resultError(e.getCause().toString(), e.getMessage());
                         e.printStackTrace();
                     }
 
                 }
 
-
-
-               /* if (response.isSuccessful()) {
-                    try {
-
-                        for (int x = 0; x < jsonArray.length(); x++) {
-                            JSONObject jsonObjects = jsonArray.getJSONObject(x);
-                            try {
-                                Date date2 = date.parse(jsonObjects.getString("updatedAt"));
-                                long diff = now.getTime() - date2.getTime();
-                                long diffHours = diff / (60 * 60 * 1000);
-                                if (x == 0) {
-                                    minimumHour = diffHours;
-                                } else {
-                                    minimumHour(diffHours, jsonObjects);
-                                }
-
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        minimumMinute(arrayHours);
-                        minimumSecond(arrayMinute);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }*/
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                //viewMpas.onFailure(t.getCause().toString(), t.getMessage());
-                Log.wtf("MainPresenter", "onFailure | cause: " + t.getCause() + " message: " + t.getMessage());
+                view.resultError(t.getCause().toString(), t.getMessage());
             }
         });
     }
@@ -101,6 +69,7 @@ public class MainPresenter implements MainInterface.MainPresenter {
                 Producto product = new Gson().fromJson(String.valueOf(jsonObject), Producto.class);
                 products.add(product);
             } catch (JSONException e) {
+                view.resultError(e.getCause().toString(), e.getMessage());
                 e.printStackTrace();
             }
         }

@@ -9,6 +9,7 @@ import com.example.examengapsi.db.AppDataBase;
 import com.example.examengapsi.model.Producto;
 import com.example.examengapsi.model.SearchHistory;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -22,7 +23,7 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MainInterface.MainView {
+public class MainActivity extends AppCompatActivity implements MainInterface.MainView, SearchHistoryAdapter.OnClickListener {
 
     private MainPresenter mainPresenter;
     RecyclerView recyclerView, recyclerViewHistory;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
     InserBDTask inserBDTask;
     SearchHistoryDBTask searchHistoryDBTask;
     private List<SearchHistory> listHistory;
+    AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,21 +71,26 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                Log.wtf("onQueryTextSubmit MainActivity", "query; " + query);
                 inserBDTask = new InserBDTask();
                 searchHistory.setText(query);
                 inserBDTask.execute(searchHistory);
-                mainPresenter.searchProduct(query);
+                searchProduct(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.wtf("MainActivity", "onQueryTextChange | newText; " + newText);
+
                 return true;
             }
         });
         return true;
+    }
+
+
+    private void searchProduct(String query) {
+        showAlert("Buscando "+ query, "Cargando datos...");
+        mainPresenter.searchProduct(query);
     }
 
     @Override
@@ -96,6 +103,25 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
     @Override
     public void resultSearchjProduct(ArrayList<Producto> products) {
         createRecyclerView(products);
+        alertDialog.dismiss();
+    }
+
+    @Override
+    public void resultError(String cause, String message) {
+        alertDialog.dismiss();
+        showAlert(cause, message);
+    }
+
+    private void showAlert(String cause, String message) {
+        alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle(cause);
+        alertDialog.setMessage(message);
+        alertDialog.show();
+    }
+
+    @Override
+    public void selectItem(String text) {
+        searchProduct(text);
     }
 
     private class InserBDTask extends AsyncTask<SearchHistory, Void, Void> {
@@ -134,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
         recyclerViewHistory.setAdapter(searchHistoryAdapter);
         recyclerViewHistory.setHasFixedSize(true);
         recyclerViewHistory.isNestedScrollingEnabled();
+        searchHistoryAdapter.setOnClickListener(this);
         searchHistoryAdapter.notifyDataSetChanged();
     }
 }

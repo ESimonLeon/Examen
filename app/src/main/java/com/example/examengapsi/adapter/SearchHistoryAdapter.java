@@ -9,11 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.examengapsi.MainActivity;
 import com.example.examengapsi.R;
 import com.example.examengapsi.model.SearchHistory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdapter.SearchHistoryHolder> {
@@ -26,6 +24,13 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         this.searchHistory = searchHistory;
     }
 
+
+    public interface OnClickListener {
+        void selectItem(String text);
+    }
+
+    public OnClickListener onClickListener;
+
     @NonNull
     @Override
     public SearchHistoryAdapter.SearchHistoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -33,8 +38,16 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchHistoryAdapter.SearchHistoryHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SearchHistoryAdapter.SearchHistoryHolder holder, final int position) {
         holder.text.setText(searchHistory.get(position).getText());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onClickListener != null) {
+                    onClickListener.selectItem(searchHistory.get(position).getText());
+                }
+            }
+        });
     }
 
     @Override
@@ -51,5 +64,9 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
             text = itemView.findViewById(R.id.idTv);
         }
+    }
+
+    public void setOnClickListener(OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 }
