@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 
 import com.example.examengapsi.model.SearchHistory;
 
-@Database(entities = {SearchHistory.class}, version = 2)
+@Database(entities = {SearchHistory.class}, version = 1)
 public abstract class AppDataBase extends RoomDatabase {
 
     private static AppDataBase INSTANCE;

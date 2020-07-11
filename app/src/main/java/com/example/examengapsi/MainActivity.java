@@ -8,17 +8,21 @@ import com.example.examengapsi.adapter.SearchHistoryAdapter;
 import com.example.examengapsi.db.AppDataBase;
 import com.example.examengapsi.model.Producto;
 import com.example.examengapsi.model.SearchHistory;
+import com.google.gson.Gson;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setQueryHint("Busca producto");
+        searchView.setQueryHint(getString(R.string.busca_producto_hint));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -89,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
 
 
     private void searchProduct(String query) {
-        showAlert("Buscando "+ query, "Cargando datos...");
+        showAlert("Buscando "+ query, getString(R.string.cargando_datos));
         mainPresenter.searchProduct(query);
     }
 
@@ -128,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
 
         @Override
         protected Void doInBackground(SearchHistory... searchHistories) {
-            Log.wtf("doinBack", "" + searchHistories[0]);
             AppDataBase.getAppDB(getApplicationContext()).searchHistoryDAO().insertSearchHistory(searchHistories[0]);
             return null;
         }
@@ -147,7 +150,6 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
         }
 
         private void showHistory(List<SearchHistory> searchHistory) {
-           Log.wtf("MainActivityt", "showHistory | searchlist: " + searchHistory);
            createRecyclerHistory(searchHistory);
         }
     }
@@ -156,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
     private void createRecyclerHistory(List<SearchHistory> searchHistory) {
         recyclerViewHistory = findViewById(R.id.idRvProducts);
         searchHistoryAdapter = new SearchHistoryAdapter(this, searchHistory);
-        recyclerViewHistory.setLayoutManager(new GridLayoutManager(this, 1));
+        recyclerViewHistory.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewHistory.setAdapter(searchHistoryAdapter);
         recyclerViewHistory.setHasFixedSize(true);
         recyclerViewHistory.isNestedScrollingEnabled();
