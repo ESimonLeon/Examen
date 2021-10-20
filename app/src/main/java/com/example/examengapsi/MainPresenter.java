@@ -2,6 +2,7 @@ package com.example.examengapsi;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -38,7 +39,6 @@ public class MainPresenter implements MainInterface.MainPresenter {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-
                 if (response.isSuccessful()) {
                     try {
                         if (response.body() != null) {

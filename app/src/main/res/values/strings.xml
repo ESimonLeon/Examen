@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ExamenGapsi</string>
+    <string name="app_name">Buscador Productos</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -12,4 +12,5 @@
     <string name="historial_de_busqueda">Historial de busqueda</string>
     <string name="cargando_datos">Cargando datos...</string>
     <string name="busca_producto_hint">Busca producto</string>
+    <string name="empty_data">No hay datos en el historial</string>
 </resources>

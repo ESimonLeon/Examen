@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
 
     private MainPresenter mainPresenter;
     RecyclerView recyclerView, recyclerViewHistory;
+    LinearLayout llEmpty;
     ProductsListAdapter productsListAdapter;
     SearchHistoryAdapter searchHistoryAdapter;
     SearchHistory searchHistory;
@@ -43,8 +45,11 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        llEmpty = findViewById(R.id.llEmpty);
 
         mainPresenter = new MainPresenter(this, this);
 
@@ -56,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
     }
 
     private void createRecyclerView(ArrayList<Producto> products) {
+        if (products.size() > 0) llEmpty.setVisibility(View.GONE);
         recyclerView = findViewById(R.id.idRvProducts);
         productsListAdapter = new ProductsListAdapter(this, products);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -93,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
 
 
     private void searchProduct(String query) {
-        showAlert("Buscando "+ query, getString(R.string.cargando_datos));
+        showAlert("Buscando " + query, getString(R.string.cargando_datos));
         mainPresenter.searchProduct(query);
     }
 
@@ -137,29 +143,32 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
         }
     }
 
-    private class SearchHistoryDBTask extends AsyncTask<Void,Void, List<SearchHistory>>{
+    private class SearchHistoryDBTask extends AsyncTask<Void, Void, List<SearchHistory>> {
 
         @Override
         protected List<SearchHistory> doInBackground(Void... voids) {
             listHistory = AppDataBase.getAppDB(getApplicationContext()).searchHistoryDAO().findAllHistory();
             return listHistory;
         }
+
         @Override
-        public void  onPostExecute(List<SearchHistory> searchHistory){
+        public void onPostExecute(List<SearchHistory> searchHistory) {
             showHistory(searchHistory);
         }
 
         private void showHistory(List<SearchHistory> searchHistory) {
-           createRecyclerHistory(searchHistory);
+            createRecyclerHistory(searchHistory);
         }
     }
 
 
     private void createRecyclerHistory(List<SearchHistory> searchHistory) {
+        if (searchHistory.size() > 0) llEmpty.setVisibility(View.GONE);
         recyclerViewHistory = findViewById(R.id.idRvProducts);
         searchHistoryAdapter = new SearchHistoryAdapter(this, searchHistory);
         recyclerViewHistory.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewHistory.setAdapter(searchHistoryAdapter);
+        recyclerViewHistory.addItemDecoration(new DividerItemDecoration(this, LinearLayout.VERTICAL));
         recyclerViewHistory.setHasFixedSize(true);
         recyclerViewHistory.isNestedScrollingEnabled();
         searchHistoryAdapter.setOnClickListener(this);
