@@ -9,7 +9,6 @@ import androidx.room.PrimaryKey;
 public class SearchHistory {
 
     @PrimaryKey
-    @NonNull
     @ColumnInfo(name="text")
     private String text;
 

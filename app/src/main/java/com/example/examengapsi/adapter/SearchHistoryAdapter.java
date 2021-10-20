@@ -1,7 +1,7 @@
 package com.example.examengapsi.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +39,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchHistoryAdapter.SearchHistoryHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull SearchHistoryAdapter.SearchHistoryHolder holder, @SuppressLint("RecyclerView") final int position) {
         holder.text.setText(searchHistory.get(position).getText());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +56,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         return searchHistory.size();
     }
 
-    public class SearchHistoryHolder extends RecyclerView.ViewHolder {
+    public static class SearchHistoryHolder extends RecyclerView.ViewHolder {
 
         TextView text;
 

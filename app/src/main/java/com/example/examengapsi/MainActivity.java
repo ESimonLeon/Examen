@@ -1,5 +1,6 @@
 package com.example.examengapsi;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -8,8 +9,8 @@ import com.example.examengapsi.adapter.SearchHistoryAdapter;
 import com.example.examengapsi.db.AppDataBase;
 import com.example.examengapsi.model.Producto;
 import com.example.examengapsi.model.SearchHistory;
-import com.google.gson.Gson;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -19,7 +20,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
     SearchHistory searchHistory;
     InserBDTask inserBDTask;
     SearchHistoryDBTask searchHistoryDBTask;
-    private List<SearchHistory> listHistory;
     AlertDialog alertDialog;
 
     @Override
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
 
         llEmpty = findViewById(R.id.llEmpty);
 
-        mainPresenter = new MainPresenter(this, this);
+        mainPresenter = new MainPresenter( this);
 
         searchHistory = new SearchHistory();
 
@@ -60,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void createRecyclerView(ArrayList<Producto> products) {
         if (products.size() > 0) llEmpty.setVisibility(View.GONE);
         recyclerView = findViewById(R.id.idRvProducts);
@@ -104,10 +104,8 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+           return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -134,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
         searchProduct(text);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class InserBDTask extends AsyncTask<SearchHistory, Void, Void> {
 
         @Override
@@ -143,12 +142,12 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class SearchHistoryDBTask extends AsyncTask<Void, Void, List<SearchHistory>> {
 
         @Override
         protected List<SearchHistory> doInBackground(Void... voids) {
-            listHistory = AppDataBase.getAppDB(getApplicationContext()).searchHistoryDAO().findAllHistory();
-            return listHistory;
+            return AppDataBase.getAppDB(getApplicationContext()).searchHistoryDAO().findAllHistory();
         }
 
         @Override
@@ -162,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface.Mai
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     private void createRecyclerHistory(List<SearchHistory> searchHistory) {
         if (searchHistory.size() > 0) llEmpty.setVisibility(View.GONE);
         recyclerViewHistory = findViewById(R.id.idRvProducts);

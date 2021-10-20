@@ -1,5 +1,6 @@
 package com.example.examengapsi.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         return new ProductsListHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_producto, parent, false));
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ProductsListHolder holder, int position) {
         holder.idTvPrice.setText(productsList.get(position).getListPrice().toString());
@@ -44,7 +46,7 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         return productsList.size();
     }
 
-    public class ProductsListHolder extends RecyclerView.ViewHolder {
+    public static class ProductsListHolder extends RecyclerView.ViewHolder {
 
         TextView idTvPrice, idTvName;
         ImageView idTvImage;

@@ -21,8 +21,4 @@ public abstract class AppDataBase extends RoomDatabase {
         }
         return INSTANCE;
     }
-
-    public  static  void  destroyBD(){
-        INSTANCE=null;
-    }
 }
